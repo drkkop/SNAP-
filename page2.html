@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Snap+ — Activation</title>
+
+<link rel="prefetch" href="page3.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  /* Palette claire comme la page 3 */
+  --fg:#0f1420; --mut:#5b6474;
+  --accent:#ff4fa6; --accent2:#ff2d86; --ok:#20d39a;
+  --stroke:#e6e8f0; --panel:#ffffff;
+  --radius:24px;
+}
+
+/* Base */
+*{box-sizing:border-box} html,body{height:100%}
+body{
+  margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--fg);
+  background:linear-gradient(180deg,#f7f9ff,#eef2ff);
+  min-height:100dvh;display:flex;align-items:center;justify-content:center;
+  padding:20px 20px max(20px,env(safe-area-inset-bottom));
+}
+
+/* Retire la grille sombre */
+.grid{display:none}
+
+.wrap{width:min(96vw,560px)}
+.card{
+  background:var(--panel);
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  padding:18px 16px;
+  box-shadow:0 14px 40px rgba(15,20,32,.06);
+  position:relative;
+}
+
+/* Header */
+.header{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;margin-bottom:8px}
+.logoBox{width:64px;height:64px;border-radius:14px;display:grid;place-items:center;background:transparent;padding:0}
+.logoBox img{width:64px;height:64px;display:block;object-fit:contain}
+h1{margin:0;font-size:24px;font-weight:900;line-height:1.05}
+.sub{margin:2px 0 0;color:var(--mut)}
+.badge{height:28px;min-width:64px;display:inline-grid;place-items:center;
+  font-variant-numeric:tabular-nums;font-size:12px;font-weight:900;
+  border:1px solid var(--stroke);background:#eef2ff;border-radius:999px;padding:0 10px;color:#334155}
+
+/* Chip copy */
+.chipbtn{height:28px;display:inline-grid;place-items:center;border-radius:999px;padding:0 10px;
+  border:1px solid var(--stroke);background:#fff;color:#374151;font:700 12px/1 Inter;cursor:pointer}
+
+/* Username chip */
+.user{display:inline-grid;grid-auto-flow:column;gap:8px;align-items:center;margin:8px 0 10px;
+  padding:6px 10px;border-radius:999px;border:1px solid var(--stroke);background:#f4f7ff;font-weight:800;max-width:100%}
+.user svg{width:16px;height:16px}
+.username{max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Progress */
+.progress{position:relative;margin-top:6px}
+.bar{position:relative;height:16px;border-radius:999px;background:#e9edf6;border:1px solid #dfe3ef;overflow:hidden}
+.bar::after{content:"";position:absolute;inset:1px;border-radius:inherit;border:1px solid #eef1f6;pointer-events:none}
+.fill{position:absolute;inset:0 0 0 0;width:0%;background:linear-gradient(90deg,#ff9ad0 0%,var(--accent) 55%,var(--accent2) 100%)}
+.stage{margin-top:8px;color:#374151;font-weight:800}
+
+/* Steps */
+.steps{display:grid;gap:8px;margin-top:8px}
+.step{display:grid;grid-template-columns:18px 1fr 20px;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;
+  border:1px solid var(--stroke);background:#f6f8ff;min-height:48px}
+.dot{width:10px;height:10px;border-radius:999px;background:#cbd5e1}
+.step[aria-current="step"] .dot{background:var(--accent)}
+.step.done{background:#ecfdf5;border-color:#d1fae5}
+.step b{font-weight:900;font-size:16px}
+.check{opacity:0;transform:scale(.6);transition:opacity .18s ease, transform .22s cubic-bezier(.2,.8,.2,1)}
+.step.done .check{opacity:1;transform:scale(1)}
+.check svg{width:18px;height:18px;display:block}
+
+/* Info */
+.infobar{margin:12px 0 0;text-align:center;color:#6b7280;font-size:12px;font-style:italic}
+
+/* Offline */
+.offline{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));
+  background:#fff;border:1px solid #fecaca;color:#991b1b;border-radius:10px;padding:8px 12px;font:700 12px/1.2 Inter;display:none}
+
+/* Focus */
+:focus-visible{outline:2px solid #60a5fa;outline-offset:2px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="offline" id="offline">Hors ligne. Reconnexion en attente…</div>
+
+  <main class="wrap" role="main" aria-labelledby="title">
+    <section class="card" id="card">
+      <header class="header">
+        <div class="logoBox"><img src="assets/logo-snap.png" alt="Snap+"></div>
+        <div>
+          <h1 id="title">Activation en cours</h1>
+          <p class="sub">Traitement sécurisé.</p>
+        </div>
+        <div class="badge" id="badgePct" aria-live="polite">0%</div>
+      </header>
+
+      <div class="user" aria-live="polite" title="" id="userChip">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 1 0-5-5 5.006 5.006 0 0 0 5 5Zm0 2c-4.006 0-8 2.006-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.994-3.994-5-8-5Z"/></svg>
+        <span class="username" id="uname">@pseudo</span>
+        <button class="chipbtn" id="copyBtn" type="button">Copier</button>
+      </div>
+
+      <!-- Progression -->
+      <div class="progress" role="status" aria-live="polite">
+        <div class="bar" role="progressbar" aria-label="Progression" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="fill" id="fill"></div>
+        </div>
+        <div class="stage" id="stage">Initialisation…</div>
+      </div>
+
+      <!-- Étapes -->
+      <div class="steps" aria-live="polite">
+        <div class="step" id="s1" aria-current="step">
+          <span class="dot"></span><b>Vérification du pseudo</b>
+          <span class="check" aria-label="étape validée">
+            <svg viewBox="0 0 24 24"><polyline fill="none" stroke="#20d39a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="4,12 9,17 20,6"/></svg>
+          </span>
+        </div>
+        <div class="step" id="s2" aria-current="false">
+          <span class="dot"></span><b>Connexion à Snapchat</b>
+          <span class="check" aria-label="étape validée">
+            <svg viewBox="0 0 24 24"><polyline fill="none" stroke="#20d39a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="4,12 9,17 20,6"/></svg>
+          </span>
+        </div>
+        <div class="step" id="s3" aria-current="false">
+          <span class="dot"></span><b>Activation de Snap+</b>
+          <span class="check" aria-label="étape validée">
+            <svg viewBox="0 0 24 24"><polyline fill="none" stroke="#20d39a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="4,12 9,17 20,6"/></svg>
+          </span>
+        </div>
+        <div class="step" id="s4" aria-current="false">
+          <span class="dot"></span><b>Finalisation</b>
+          <span class="check" aria-label="étape validée">
+            <svg viewBox="0 0 24 24"><polyline fill="none" stroke="#20d39a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="4,12 9,17 20,6"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="infobar" id="info">Redirection automatique à la fin.</div>
+    </section>
+  </main>
+
+<script>
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DURATION = reduceMotion ? 0 : 10000;
+
+/* pseudo */
+const params = new URLSearchParams(location.search);
+const raw = (params.get('u') || localStorage.getItem('snap_username') || 'pseudo').trim();
+const uname = raw.toLowerCase().replace(/[^a-z0-9._-]/g,'').slice(0,30) || 'pseudo';
+const unameEl = document.getElementById('uname');
+document.getElementById('userChip').title = raw;
+unameEl.textContent = '@' + uname;
+
+/* elements */
+const fill = document.getElementById('fill');
+const badgePct = document.getElementById('badgePct');
+const pbar = document.querySelector('.bar');
+const stage = document.getElementById('stage');
+const info = document.getElementById('info');
+const offline = document.getElementById('offline');
+
+const steps = [
+  {el:document.getElementById('s1'), at:12, label:'Vérification du pseudo'},
+  {el:document.getElementById('s2'), at:38, label:'Connexion à Snapchat'},
+  {el:document.getElementById('s3'), at:66, label:'Activation de Snap+'},
+  {el:document.getElementById('s4'), at:88, label:'Finalisation'}
+];
+
+let start=null, rafId=null, paused=false, last=0;
+const HAPTIC = ('vibrate' in navigator) && !reduceMotion;
+
+function setPct(val){
+  const v = Math.max(0, Math.min(100, Math.round(val)));
+  fill.style.width = v+'%';
+  badgePct.textContent = v+'%';
+  pbar.setAttribute('aria-valuenow', String(v));
+  last = v;
+}
+function updateSteps(val){
+  let current = 'Initialisation…';
+  steps.forEach((s,i)=>{
+    const next = (steps[i+1]?.at ?? 101);
+    const active = val >= s.at && val < next;
+    s.el.setAttribute('aria-current', active ? 'step' : 'false');
+    if(val >= s.at + 5 && !s.el.classList.contains('done')){
+      s.el.classList.add('done');
+      if(HAPTIC) navigator.vibrate(10);
+    }
+    if(active) current = s.label;
+  });
+  stage.textContent = current;
+}
+
+/* anim */
+function tick(ts){
+  if(start===null) start = ts;
+  const t = Math.min(1, (ts - start) / DURATION);
+  const eased = 1 - Math.pow(1 - t, 2.6);
+  const val = eased*100;
+  setPct(val);
+  updateSteps(val);
+
+  if(t < 1 && !paused) rafId=requestAnimationFrame(tick);
+  else finish();
+}
+function finish(){
+  setPct(100);
+  stage.textContent = 'Terminé';
+  setTimeout(()=>location.href='page3.html', 220);
+}
+
+/* online/offline */
+function syncOnline(){ offline.style.display = navigator.onLine ? 'none' : 'block'; }
+addEventListener('online', syncOnline); addEventListener('offline', syncOnline); syncOnline();
+
+/* pause/resume */
+document.addEventListener('visibilitychange', ()=>{
+  if(DURATION===0) return;
+  if(document.hidden){ paused=true; cancelAnimationFrame(rafId); }
+  else{ paused=false; start = performance.now() - (last/100)*DURATION; rafId=requestAnimationFrame(tick); }
+});
+
+/* copy username */
+document.getElementById('copyBtn').addEventListener('click', async (e)=>{
+  const btn = e.currentTarget;
+  try{ await navigator.clipboard.writeText(unameEl.textContent); const t=btn.textContent; btn.textContent='Copié'; setTimeout(()=>btn.textContent=t,1200);}catch(_){}
+});
+
+/* fallback redirect */
+setTimeout(()=>{ if(last<100) location.href='page3.html'; }, Math.max(15000, DURATION+3000));
+
+/* start */
+if(DURATION===0){
+  setPct(100); updateSteps(100); stage.textContent='Terminé';
+  setTimeout(()=>location.href='page3.html', 150);
+}else{
+  rafId=requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>
