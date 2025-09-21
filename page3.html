@@ -18,16 +18,14 @@
   --prim:#3b82f6; --prim2:#2563eb;
   --ok:#16a34a; --stroke:#e6e8f0; --card:#ffffff;
 }
-*{box-sizing:border-box}
-
-/* fix scroll: pas de flex plein-écran, page démarre en haut */
-html,body{height:auto;min-height:100%;overflow-y:auto}
+*{box-sizing:border-box} html,body{height:100%}
 body{
   margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
   background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  min-height:100dvh;display:flex;align-items:center;justify-content:center;
   padding:24px 16px max(24px,env(safe-area-inset-bottom));
 }
-.wrap{width:min(96vw,760px);margin:0 auto}
+.wrap{width:min(96vw,760px)}
 .card{
   background:var(--card); border:1px solid var(--stroke); border-radius:24px;
   box-shadow:0 14px 40px rgba(15,20,32,.06); padding:22px 20px;
@@ -115,7 +113,7 @@ body{
           </div>
 
           <div class="cta">
-            <a class="btn" id="goPay" href="https://t.trklinkx.com/click?pid=4764&offer_id=10243&ref_id=snap+">Obtenir pour 2 €</a>
+            <a class="btn" id="goPay" href="https://t.trklinkx.com/sl?id=689de8882e092fb7bd1d8eb0&pid=4764">Obtenir pour 2 €</a>
           </div>
         </section>
 
@@ -146,12 +144,6 @@ body{
 <script>
 const $ = s => document.querySelector(s);
 
-/* toujours démarrer en haut, même via back/forward cache iOS */
-try{ history.scrollRestoration='manual'; }catch(e){}
-const toTop=()=>window.scrollTo(0,0);
-addEventListener('DOMContentLoaded',toTop);
-addEventListener('pageshow',e=>{ if(e.persisted) toTop(); });
-
 /* pseudo + ref */
 const raw = (new URLSearchParams(location.search).get("u") || localStorage.getItem("snap_username") || "pseudo").trim();
 const uname = (raw.toLowerCase().replace(/[^a-z0-9._-]/g,"").slice(0,30) || "pseudo");
@@ -172,7 +164,7 @@ $("#copy").addEventListener("click", async ()=>{
   }catch(_){}
 });
 
-/* CTA → ajoute u/ref au lien de paiement */
+/* CTA → affi avec paramètres */
 (function setHref(a){
   const u = new URL(a.getAttribute("href"), location.href);
   u.searchParams.set("u", uname);
@@ -190,5 +182,22 @@ let s = 5*60;
   if(s>0) setTimeout(tick, 1000);
 })();
 </script>
+
+<!-- Default Statcounter code for SNAP+ https://snapmax.fr/ -->
+<script type="text/javascript">
+var sc_project=13168413; 
+var sc_invisible=1; 
+var sc_security="79b09b85"; 
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics
+Made Easy - Statcounter" href="https://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="https://c.statcounter.com/13168413/0/79b09b85/1/"
+alt="Web Analytics Made Easy - Statcounter"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
 </body>
 </html>
